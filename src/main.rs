@@ -1,5 +1,5 @@
 use std::path::Path;
-use std::{env, process};
+use std::env;
 use std::fs::{File, OpenOptions};
 use std::collections::{HashMap, HashSet};
 use std::io::{BufRead, BufReader, Write};
@@ -86,14 +86,15 @@ impl GitignoreRules {
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    
+
     if args.len() < 2 {
         eprintln!("No arguments provided. Use --help or -h for usage information.");
-        process::exit(1);
+        std::process::exit(1);
     }
 
     let mut content = String::new();
     let mut is_add = false;
+    let mut is_remove = false;
     let gitignore_rules = GitignoreRules::new();
 
     for (index, arg) in args.iter().enumerate().skip(1) {
@@ -103,11 +104,22 @@ fn main() {
                 return;
             }
             (1, "--add") | (1, "-a") => {
+                if !is_remove {
+                    content = read_gitignore_rules();
+                }
                 is_add = true;
-                content = read_gitignore_rules();
+                is_remove = false;
                 continue;
             }
-            (_, arg) if arg == "--help" || arg == "-h" || arg == "--add" || arg == "-a" => {
+            (1, "--remove") | (1, "-r") => {
+                if !is_add {
+                    content = read_gitignore_rules();
+                }
+                is_add = false;
+                is_remove = true;
+                continue;
+            }
+            (_, arg) if arg == "--help" || arg == "-h" || arg == "--add" || arg == "-a" || arg == "--remove" || arg == "-r" => {
                 println!("Options must be before arguments");
                 return;
             }
@@ -116,11 +128,13 @@ fn main() {
 
         if !valid_argument(arg) {
             eprintln!("Invalid argument: {}", arg);
-            process::exit(1);
+            std::process::exit(1);
         }
 
         content = if is_add {
             add_gitignore_rule(content, arg, &gitignore_rules)
+        } else if is_remove {
+            remove_gitignore_rule(content, arg, &gitignore_rules)
         } else {
             generate_gitignore_rule(content, arg, &gitignore_rules)
         };
@@ -143,13 +157,13 @@ fn valid_argument(arg: &str) -> bool {
         // Developer tools
         "docker", "npm", "pnpm", "yarn", "gradle", "maven", "webpack", "composer", "pip",
         // Database managers
-        "mysql", "mongodb", "sqllite", "firebase",
+        "mysql", "mongodb", "sqlite", "firebase",
         // Code editors & IDE
         "vscode", "idea", "visualstudio", "eclipse", "androidstudio", "xcode", "sublimetext", "atom", "vim",
         // Operating systems
         "windows", "linux", "macos",
         // Other
-        "scss", "sass", "less", "jupiter", "terraform"
+        "scss", "sass", "less", "jupyter", "terraform"
     ];
     allowed_args.contains(&arg)
 }
@@ -157,7 +171,7 @@ fn valid_argument(arg: &str) -> bool {
 // Функція, що приймає в себе змінну та аргумент і повертає видозмінену змінну
 fn generate_gitignore_rule(mut content: String, arg: &str, rules: &GitignoreRules) -> String {
     content.push_str(&format!("# {}\n", arg));
-    
+
     if let Some(tech_rules) = rules.get_rules(arg) {
         for rule in tech_rules {
             content.push_str(rule);
@@ -171,14 +185,14 @@ fn generate_gitignore_rule(mut content: String, arg: &str, rules: &GitignoreRule
 
 // Функція шукає в робочій теці файл .gitignore та зчитує його значення у змінну
 fn read_gitignore_rules() -> String {
-    let path = Path::new(".gitignore");
     // let path = Path::new(".gitignore.test");
+    let path = Path::new(".gitignore");
     let mut content = String::new();
 
     if path.exists() {
         let file = File::open(&path).unwrap_or_else(|e| {
             eprintln!("Error opening file: {}", e);
-            process::exit(1);
+            std::process::exit(1);
         });
 
         let reader = BufReader::new(file);
@@ -190,7 +204,7 @@ fn read_gitignore_rules() -> String {
                 }
                 Err(e) => {
                     eprintln!("Error reading line: {}", e);
-                    process::exit(1);
+                    std::process::exit(1);
                 }
             }
         }
@@ -204,7 +218,7 @@ fn read_gitignore_rules() -> String {
 // Функція приймає в себе контент взятий з файлу та додає до нього нові правила не переписуючи старі
 fn add_gitignore_rule(mut content: String, arg: &str, rules: &GitignoreRules) -> String {
     content.push_str(&format!("# {}\n", arg));
-    
+
     if let Some(tech_rules) = rules.get_rules(arg) {
         for rule in tech_rules {
             content.push_str(rule);
@@ -216,10 +230,25 @@ fn add_gitignore_rule(mut content: String, arg: &str, rules: &GitignoreRules) ->
     content
 }
 
-// TODO: Implement remove_gitignore_rule function
-// fn remove_gitignore_rule(mut content: String, arg: &str) -> String {
-//     // Implementation here
-// }
+// Функція приймає в себе контент взятий з файлу та видаляє з нього непотрібні правила не переписуючи старі
+fn remove_gitignore_rule(content: String, arg: &str, rules: &GitignoreRules) -> String {
+    let mut lines_to_remove = HashSet::new();
+    
+    // Формуємо коментар, додаючи пробіл після решітки
+    let comment_line = format!("# {}", arg);
+
+    if let Some(tech_rules) = rules.get_rules(arg) {
+        lines_to_remove.insert(comment_line);
+        for rule in tech_rules {
+            lines_to_remove.insert(rule.clone());
+        }
+    }
+
+    content.lines()
+           .filter(|line| !lines_to_remove.contains(&line.to_string()))
+           .collect::<Vec<_>>()
+           .join("\n")
+}
 
 // Функція для оптимізації тексту в .gitignore за рахунок видалення повторюваних рядків
 fn optimize_rules(content: String) -> String {
@@ -236,17 +265,16 @@ fn write_in_file(written_text: &str) {
         .write(true)
         .create(true)
         .truncate(true)
-        .open(".gitignore")
         // .open(".gitignore.test")
-
+        .open(".gitignore")
         .unwrap_or_else(|e| {
             eprintln!("Error creating file: {}", e);
-            process::exit(1);
+            std::process::exit(1);
         });
 
     file.write_all(written_text.as_bytes()).unwrap_or_else(|e| {
         eprintln!("Error writing to file: {}", e);
-        process::exit(1);
+        std::process::exit(1);
     });
 
     println!("Successfully wrote to .gitignore");
@@ -254,11 +282,11 @@ fn write_in_file(written_text: &str) {
 
 // Функція для виводу допомоги
 fn show_help() {
-    println!("\x1b[1mUsage:\x1b[0m gig [OPTIONS] [RULES]");
+    println!("\x1b[1mUsage:\x1b[0m gig [OPTION] [RULES]");
     println!("\n\x1b[1mOptions:\x1b[0m");
     println!("  -h, --help      Show help message");
     println!("  -a, --add       Add a new rule to an existing .gitignore file");
-    // println!("  -r, --remove    Remove a rule from an existing .gitignore file");
+    println!("  -r, --remove    Remove a rule from an existing .gitignore file");
     println!("\n\x1b[1mNote:\x1b[0m");
     println!("  If neither --add nor --remove options are used, the .gitignore\n  file will be completely overwritten.");
     println!("\n\x1b[1mRules:\x1b[0m");
@@ -272,6 +300,9 @@ fn show_help() {
     println!("  \x1b[1mOther:\x1b[0m scss, less, jupiter, terraform");
     println!("\n\x1b[1mExample:\x1b[0m");
     println!("  gig react node vscode");
+    println!("  gig -add renpy idea");
+    println!("  gig --remove python django");
+    // println!("  gig --add ruby rubyonrails --remove python django");
     println!("\n\x1b[1mGiG (.gitignore generator)\x1b[0m is a terminal utility to simplify the");
-    println!("creation of .gitignore files");
+    println!("creation of .gitignore files for your projects");
 }

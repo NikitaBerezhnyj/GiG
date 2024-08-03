@@ -19,22 +19,54 @@ GiG repository has [Ukrainian :ukraine:](#gig-ukraine) and [English :uk:](#gig-u
 ## Використання
 
 ```bash
-gig [OPTIONS] [RULES]
+gig [OPTION] [RULES]
 ```
 
 #### Опції
 
 - `-h`, `--help`: Показати довідку
+- `-a`, `--add`: Додати нове правило до існуючого .gitignore файлу.
+- `-r`, `--remove`: Видалити правило з існуючого .gitignore файлу.
 
 #### Правила
 
-Вкажіть одне або кілька правил для включення у файл .gitignore. Наприклад:
+Вкажіть одне або кілька правил для включення у файл .gitignore. Програма автоматично додасть відповідні записи у ваш .gitignore файл. Ось кілька прикладів використання:
+
+***1. Створення .gitignore з популярними технологіями:***
 
 ```bash
 gig react node vscode
 ```
 
-Це створить файл .gitignore з правилами для React, Node.js та VS Code.
+Ця команда створить .gitignore файл з записами для React, Node.js та VS Code.
+
+***2. Додавання нових правил до існуючого .gitignore файлу:***
+
+```bash
+gig --a renpy idea
+```
+
+або
+
+```bash
+gig --add renpy idea
+```
+
+Ця команда додасть правила для Ren'Py і IDE до вже існуючого .gitignore файлу.
+
+***3. Видалення конкретних правил з .gitignore файлу:***
+
+```bash
+gig --r python django
+```
+
+або
+
+```bash
+gig --remove python django
+```
+
+Ця команда видалить правила для Python і Django з вашого .gitignore файлу.
 
 ### Підтримувані правила
 
@@ -88,22 +120,54 @@ ___
 ## Usage
 
 ```bash
-gig [OPTIONS] [RULES]
+gig [OPTION] [RULES]
 ```
 
 #### Options
 
 - `-h`, `--help`: Show help
+- `-a`, `--add`: Add a new rule to an existing .gitignore file.
+- `-r`, `--remove`: Remove a rule from an existing .gitignore file.
 
 #### Rules.
 
-Specify one or more rules to include in the .gitignore file. For example:
+Specify one or more rules to include in the .gitignore file. The program will automatically add the corresponding entries to your .gitignore file. Here are some examples of usage:
+
+***1. Create a .gitignore with popular technologies:***
 
 ```bash
 gig react node vscode
 ```
 
-This will create a .gitignore file with rules for React, Node.js, and VS Code.
+This command will create a .gitignore file with entries for React, Node.js, and VS Code.
+
+***2. Adding new rules to an existing .gitignore file:***
+
+```bash
+gig --a renpy idea
+```
+
+or
+
+```bash
+gig --add renpy idea
+```
+
+This command will add rules for Ren'Py and IDE to an existing .gitignore file.
+
+***3. Removing specific rules from a .gitignore file:***
+
+```bash
+gig --r python django
+```
+
+or
+
+```bash
+gig --remove python django
+```
+
+This command will remove the rules for Python and Django from your .gitignore file.
 
 ### Supported rules
 
