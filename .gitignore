@@ -3,6 +3,7 @@
 
 # vscode
 .vscode/
+
 # linux
 *~
 .DS_Store

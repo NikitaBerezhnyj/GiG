@@ -1,203 +1,255 @@
 # GiG
 
-GiG repository has [Ukrainian :ukraine:](#gig-ukraine) and [English :uk:](#gig-uk) localizations
+Repository has [ukrainian :ukraine:](#gig-ukraine) and [english :uk:](#gig-uk) localization.
 
 ## GiG :ukraine:
 
-<p align='center'>
-  <img src='./icon.png' alt='Іконка застосунку' style="width:75%">
-</p>
+**GiG** (.gitignore Generator) — це інструмент командного рядка для швидкого створення та керування `.gitignore` файлами у ваших проектах.
 
-***GiG (.gitignore generator)*** - це утиліта командного рядка для спрощення створення примітивних .gitignore файлів. GiG дозволяє швидко генерувати файли .gitignore з попередньо визначеними правилами для різних мов програмування, фреймворків, інструментів розробки та операційних систем. Це допомагає розробникам легко створювати відповідні файли .gitignore для своїх проектів, не витрачаючи час на ручне написання правил.
+### Огляд
 
-### Особливості
+GiG автоматизує створення `.gitignore` файлів з попередньо визначеними правилами для різних технологій. Замість того, щоб вручну шукати та копіювати правила для кожної мови програмування, фреймворку чи інструменту, GiG генерує їх миттєво з можливістю вибору через інтерактивний інтерфейс або через аргументи командного рядка.
 
-- Підтримка широкого спектру мов програмування та технологій
-- Автоматична оптимізація правил для уникнення дублювання
-- Простий інтерфейс командного рядка
+Інструмент підтримує понад 60 технологій, організованих у зручні категорії, та дозволяє додавати чи видаляти правила з існуючих `.gitignore` файлів без перезапису всього вмісту.
 
-## Використання
+### Функції
+
+- **Інтерактивний режим** — вибір технологій через зручний multiselect інтерфейс з категоризацією
+- **Швидка генерація** — створення `.gitignore` файлів однією командою через аргументи CLI
+- **Гнучке керування** — додавання та видалення правил з існуючих файлів
+- **Автоматична оптимізація** — видалення дублікатів для чистоти файлу
+- **Широка підтримка** — понад 60 технологій у 8 категоріях
+- **Категоризація** — окремі multiselect для мов, фреймворків, IDE, ОС тощо
+- **Валідація** — перевірка введених технологій з інформативними повідомленнями про помилки
+
+### Використані технології
+
+- **Rust** — швидка, надійна та безпечна мова системного програмування
+- **Clap** — парсер аргументів командного рядка з derive-макросами
+- **Inquire** — інтерактивні CLI запити з підтримкою multiselect
+
+### Початок роботи
+
+Щоб почати працювати з GiG, виконайте наступні кроки:
+
+1. **Клонуйте репозиторій:**
+
+   ```bash
+   git clone https://github.com/NikitaBerezhnyj/GiG.git
+   cd GiG
+   ```
+
+2. **Зберіть проект:**
+
+   ```bash
+   cargo build --release
+   ```
+
+3. **Встановіть бінарний файл:**
+   ```bash
+   cargo install --path .
+   ```
+
+### Використання
+
+Після встановлення проєкту ви можете виконувати такі дії:
+
+1. **Інтерактивна генерація** `.gitignore` (рекомендований спосіб):
+
+   ```bash
+   gig
+   ```
+
+   Вам буде запропоновано вибрати технології з кожної категорії через multiselect інтерфейс.
+
+2. **Швидка генерація** через аргументи командного рядка:
+
+   ```bash
+   gig generate rust node vscode
+   ```
+
+   Створює новий `.gitignore` файл з правилами для Rust, Node.js та VS Code.
+
+3. **Додавання правил** до існуючого `.gitignore`:
+
+   - Через аргументи:
+     ```bash
+     gig add python django
+     ```
+   - В інтерактивному режимі:
+     ```bash
+     gig add --interactive
+     ```
+
+4. **Видалення правил** з існуючого `.gitignore`:
+   - Через аргументи:
+     ```bash
+     gig remove react node
+     ```
+   - В інтерактивному режимі:
+     ```bash
+     gig remove --interactive
+     ```
+
+### Підтримувані технології
+
+GiG підтримує широкий спектр технологій, організованих у категорії:
+
+- **Мови програмування** — C, C++, C#, Java, Kotlin, Swift, Rust, Python, Go, Ruby, PHP
+- **Фреймворки** — React, Angular, Vue, Svelte, Node, Next.js, Nuxt.js, Express, Django, Tauri, Electron, Spring, Ruby on Rails, Laravel, Flutter, Flask, ASP.NET
+- **Ігрові двигуни** — Unity, Unreal Engine, Godot, Ren'Py
+- **Інструменти розробника** — Docker, npm, pnpm, Yarn, Gradle, Maven, Webpack, Composer, pip
+- **Бази даних** — MySQL, MongoDB, SQLite, Firebase
+- **IDE та редактори** — VS Code, IntelliJ IDEA, Visual Studio, Eclipse, Android Studio, Xcode, Sublime Text, Atom, Vim
+- **Операційні системи** — Windows, Linux, macOS
+- **Інше** — SCSS, Sass, Less, Jupyter, Terraform
+
+### Приклади використання
 
 ```bash
-gig [OPTION] [RULES]
+# Створення .gitignore для React проекту
+gig generate react node npm vscode
+
+# Додавання Python правил до існуючого файлу
+gig add python pip
+
+# Видалення застарілих правил
+gig remove atom sublimetext
+
+# Інтерактивний режим для вибору з усіх доступних технологій
+gig
 ```
 
-#### Опції
+### Ліцензія та правила спільноти
 
-- `-h`, `--help`: Показати довідку
-- `-a`, `--add`: Додати нове правило до існуючого .gitignore файлу.
-- `-r`, `--remove`: Видалити правило з існуючого .gitignore файлу.
+- [License](LICENSE) — ліцензія проекту
+- [Code of Conduct](CODE_OF_CONDUCT.md) — очікувана поведінка учасників
+- [Contributing Guide](CONTRIBUTING.md) — як допомогти проекту
+- [Security Policy](SECURITY.md) — повідомлення про проблеми безпеки
 
-#### Правила
-
-Вкажіть одне або кілька правил для включення у файл .gitignore. Програма автоматично додасть відповідні записи у ваш .gitignore файл. Ось кілька прикладів використання:
-
-***1. Створення .gitignore з популярними технологіями:***
-
-```bash
-gig react node vscode
-```
-
-Ця команда створить .gitignore файл з записами для React, Node.js та VS Code.
-
-***2. Додавання нових правил до існуючого .gitignore файлу:***
-
-```bash
-gig --a renpy idea
-```
-
-або
-
-```bash
-gig --add renpy idea
-```
-
-Ця команда додасть правила для Ren'Py і IDE до вже існуючого .gitignore файлу.
-
-***3. Видалення конкретних правил з .gitignore файлу:***
-
-```bash
-gig --r python django
-```
-
-або
-
-```bash
-gig --remove python django
-```
-
-Ця команда видалить правила для Python і Django з вашого .gitignore файлу.
-
-### Підтримувані правила
-
-GiG підтримує широкий спектр правил, включаючи:
-
-- ***Мови програмування*** (C, C++, C#, Java, Go, Rust, Python, PHP, Ruby, Swift, Kotlin)
-- ***Фреймворки*** (React, Angular, Vue, Node, Django, Tauri, Spring, Ruby on Rails, Laravel, Express, Flutter, Svelte, Next.js, Nuxt.js, Flask, ASP.NET, Electron)
-- ***Ігрові двигуни*** (Unity, Unreal Engine, Godot, Ren'Py)
-- ***Інструменти розробника*** (Docker, npm, pnpm, Yarn, Gradle, Maven, Webpack, Composer, pip)
-- ***Системи керування базами даних*** (MySQL, MongoDB, SQLite, Firebase)
-- ***Редактори коду та IDE*** (VS Code, IntelliJ IDEA, Visual Studio, Eclipse, Android Studio, Xcode, Sublime Text, Atom, Vim)
-- ***Операційні системи*** (Windows, Linux, macOS)
-- ***Інше*** (SCSS, Less, Jupyter, Terraform)
-
-### Встановлення
-
-1. Клонуйте репозиторій на свій ПК
-
-```bash
-git clone https://github.com/NikitaBerezhnyj/GiG.git
-```
-
-2. Перейдіть у теку
-
-```bash
-cd GiG
-```
-
-3. Запустіть команду на збірку
-
-```bash
-make install
-```
-
-___
+---
 
 ## GiG :uk:
 
-<p align='center'>
-  <img src='./icon.png' alt='Application icon' style=“width:75%”>
-</p>
+**GiG** (.gitignore Generator) is a command-line tool for quickly creating and managing `.gitignore` files in your projects.
 
-***GiG (.gitignore generator)*** is a command-line utility to simplify the creation of primitive .gitignore files. GiG allows you to quickly generate .gitignore files with predefined rules for different programming languages, frameworks, development tools, and operating systems. This helps developers easily create appropriate .gitignore files for their projects without wasting time manually writing rules.
+### Overview
+
+GiG automates the creation of `.gitignore` files with predefined rules for various technologies. Instead of manually searching and copying rules for each programming language, framework, or tool, GiG generates them instantly with the ability to select through an interactive interface or command-line arguments.
+
+The tool supports over 60 technologies organized into convenient categories and allows adding or removing rules from existing `.gitignore` files without overwriting the entire content.
 
 ### Features
 
-- Supports a wide range of programming languages and technologies
-- Automatic optimization of rules to avoid duplication
-- Simple command line interface
+- **Interactive Mode** — Select technologies through a convenient multiselect interface with categorization
+- **Quick Generation** — Create `.gitignore` files with a single command via CLI arguments
+- **Flexible Management** — Add and remove rules from existing files
+- **Automatic Optimization** — Remove duplicates for file cleanliness
+- **Wide Support** — Over 60 technologies across 8 categories
+- **Categorization** — Separate multiselect for languages, frameworks, IDEs, OS, etc.
+- **Validation** — Check entered technologies with informative error messages
 
-## Usage
+### Technologies Used
+
+- **Rust** — Fast, reliable, and memory-safe systems programming language
+- **Clap** — Command-line argument parser with derive macros
+- **Inquire** — Interactive CLI prompts with multiselect support
+
+### Getting Started
+
+To get started with GiG, follow these steps:
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/NikitaBerezhnyj/GiG.git
+   cd GiG
+   ```
+
+2. **Build the project:**
+
+   ```bash
+   cargo build --release
+   ```
+
+3. **Install the binary:**
+   ```bash
+   cargo install --path .
+   ```
+
+### Usage
+
+After installing the project, you can perform the following actions:
+
+1. **Interactive generation** of `.gitignore` (recommended method):
+
+   ```bash
+   gig
+   ```
+
+   You will be prompted to select technologies from each category through a multiselect interface.
+
+2. **Quick generation** via command-line arguments:
+
+   ```bash
+   gig generate rust node vscode
+   ```
+
+   Creates a new `.gitignore` file with rules for Rust, Node.js, and VS Code.
+
+3. **Add rules** to an existing `.gitignore`:
+
+   - Via arguments:
+     ```bash
+     gig add python django
+     ```
+   - In interactive mode:
+     ```bash
+     gig add --interactive
+     ```
+
+4. **Remove rules** from an existing `.gitignore`:
+   - Via arguments:
+     ```bash
+     gig remove react node
+     ```
+   - In interactive mode:
+     ```bash
+     gig remove --interactive
+     ```
+
+### Supported Technologies
+
+GiG supports a wide range of technologies organized into categories:
+
+- **Programming Languages** — C, C++, C#, Java, Kotlin, Swift, Rust, Python, Go, Ruby, PHP
+- **Frameworks** — React, Angular, Vue, Svelte, Node, Next.js, Nuxt.js, Express, Django, Tauri, Electron, Spring, Ruby on Rails, Laravel, Flutter, Flask, ASP.NET
+- **Game Engines** — Unity, Unreal Engine, Godot, Ren'Py
+- **Developer Tools** — Docker, npm, pnpm, Yarn, Gradle, Maven, Webpack, Composer, pip
+- **Databases** — MySQL, MongoDB, SQLite, Firebase
+- **IDEs & Editors** — VS Code, IntelliJ IDEA, Visual Studio, Eclipse, Android Studio, Xcode, Sublime Text, Atom, Vim
+- **Operating Systems** — Windows, Linux, macOS
+- **Other** — SCSS, Sass, Less, Jupyter, Terraform
+
+### Usage Examples
 
 ```bash
-gig [OPTION] [RULES]
+# Create .gitignore for a React project
+gig generate react node npm vscode
+
+# Add Python rules to existing file
+gig add python pip
+
+# Remove outdated rules
+gig remove atom sublimetext
+
+# Interactive mode to select from all available technologies
+gig
 ```
 
-#### Options
+### License & Community Guidelines
 
-- `-h`, `--help`: Show help
-- `-a`, `--add`: Add a new rule to an existing .gitignore file.
-- `-r`, `--remove`: Remove a rule from an existing .gitignore file.
-
-#### Rules.
-
-Specify one or more rules to include in the .gitignore file. The program will automatically add the corresponding entries to your .gitignore file. Here are some examples of usage:
-
-***1. Create a .gitignore with popular technologies:***
-
-```bash
-gig react node vscode
-```
-
-This command will create a .gitignore file with entries for React, Node.js, and VS Code.
-
-***2. Adding new rules to an existing .gitignore file:***
-
-```bash
-gig --a renpy idea
-```
-
-or
-
-```bash
-gig --add renpy idea
-```
-
-This command will add rules for Ren'Py and IDE to an existing .gitignore file.
-
-***3. Removing specific rules from a .gitignore file:***
-
-```bash
-gig --r python django
-```
-
-or
-
-```bash
-gig --remove python django
-```
-
-This command will remove the rules for Python and Django from your .gitignore file.
-
-### Supported rules
-
-GiG supports a wide range of rules, including:
-
-- ***Programming languages*** (C, C++, C#, Java, Go, Rust, Python, PHP, Ruby, Swift, Kotlin)
-- ***Frameworks*** (React, Angular, Vue, Node, Django, Tauri, Spring, Ruby on Rails, Laravel, Express, Flutter, Svelte, Next.js, Nuxt.js, Flask, ASP.NET, Electron)
-- ***Game engines*** (Unity, Unreal Engine, Godot, Ren'Py)
-- ***Developer tools*** (Docker, npm, pnpm, Yarn, Gradle, Maven, Webpack, Composer, pip)
-- ***Database management systems*** (MySQL, MongoDB, SQLite, Firebase)
-- ***Code editors and IDEs*** (VS Code, IntelliJ IDEA, Visual Studio, Eclipse, Android Studio, Xcode, Sublime Text, Atom, Vim)
-- ***Operating systems*** (Windows, Linux, macOS)
-- ***Other*** (SCSS, Less, Jupyter, Terraform)
-
-### Installation
-
-1. Clone the repository to your PC
-
-```bash
-git clone https://github.com/NikitaBerezhnyj/GiG.git
-```
-
-2. Change to the folder
-
-```bash
-cd GiG
-```
-
-3. Run the command to build
-
-```bash
-make install
-```
+- [License](LICENSE) — project license
+- [Code of Conduct](CODE_OF_CONDUCT.md) — expected behavior for contributors
+- [Contributing Guide](CONTRIBUTING.md) — how to help the project
+- [Security Policy](SECURITY.md) — reporting security issues
